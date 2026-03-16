@@ -258,15 +258,57 @@ function Login() {
                             Welcome back! You have logged in successfully.
                         </p>
 
-                        <button
-                            onClick={() => {
-                                setShowPopup(false);
-                                navigate("/dashboard");
-                            }}
-                            className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition duration-300"
-                        >
-                            OK
-                        </button>
+                        <div className="flex gap-3 justify-center">
+
+                            <button
+                                onClick={() => {
+                                    setShowPopup(false);
+                                    navigate("/dashboard");
+                                }}
+                                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+                            >
+                                Skip
+                            </button>
+
+                            <button
+                                onClick={async () => {
+
+                                    const userData = JSON.parse(localStorage.getItem("user"));
+
+                                    try {
+
+                                        await axios.post(
+                                            "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/upgrade-premium",
+                                            {
+                                                email: userData.email
+                                            }
+                                        );
+
+                                        userData.premium = true;
+                                        localStorage.setItem("user", JSON.stringify(userData));
+
+                                        let premiumUsers = JSON.parse(localStorage.getItem("premiumUsers")) || [];
+
+                                        if (!premiumUsers.includes(userData.email)) {
+                                            premiumUsers.push(userData.email);
+                                        }
+
+                                        localStorage.setItem("premiumUsers", JSON.stringify(premiumUsers));
+
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
+
+                                    setShowPopup(false);
+                                    navigate("/dashboard");
+
+                                }}
+                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                            >
+                                Upgrade
+                            </button>
+
+                        </div>
 
                     </div>
 

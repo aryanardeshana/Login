@@ -32,7 +32,29 @@ function Dashboard() {
   };
 
   useEffect(() => {
+
+    const userData = localStorage.getItem("user");
+
+    if (!userData) {
+      navigate("/");
+      return;
+    }
+
     fetchUsers();
+
+    // Back button disable
+    window.history.pushState(null, null, window.location.href);
+
+    const handleBack = () => {
+      window.history.pushState(null, null, window.location.href);
+    };
+
+    window.addEventListener("popstate", handleBack);
+
+    return () => {
+      window.removeEventListener("popstate", handleBack);
+    };
+
   }, []);
 
   return (
@@ -66,8 +88,16 @@ function Dashboard() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold">
+            <h2 className="text-2xl font-semibold flex items-center gap-2">
               Welcome {user?.name || "User"}
+
+              {user?.premium && (
+                <span className="text-yellow-500 flex items-center gap-1">
+                  <i className="fa-solid fa-crown"></i>
+                  Premium
+                </span>
+              )}
+
             </h2>
 
             <p className="text-gray-500">
@@ -90,6 +120,7 @@ function Dashboard() {
               <tr>
                 <th className="p-3 border">Name</th>
                 <th className="p-3 border">Email</th>
+                <th className="p-3 border">Status</th>
               </tr>
             </thead>
 
@@ -107,11 +138,27 @@ function Dashboard() {
                       {u.email}
                     </td>
 
+                    <td className="p-3 border">
+                      {u.premium ? (
+
+                        <span className="text-yellow-500 font-semibold flex items-center justify-center gap-1">
+                          <i className="fa-solid fa-crown"></i> Premium
+                        </span>
+
+                      ) : (
+
+                        <span className="text-gray-400">
+                          Free
+                        </span>
+
+                      )}
+                    </td>
+
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="2" className="p-4 text-center">
+                  <td colSpan="3" className="p-4 text-center">
                     No users found
                   </td>
                 </tr>

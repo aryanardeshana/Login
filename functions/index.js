@@ -47,7 +47,11 @@ app.get("/response", (req, res) => {
 const UserSchema = new mongoose.Schema({
     name: String,
     email: String,
-    password: String
+    password: String,
+    premium: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const User = mongoose.model("User", UserSchema);
@@ -126,7 +130,8 @@ app.post("/login", async (req, res) => {
             token: token,
             user: {
                 name: user.name,
-                email: user.email
+                email: user.email,
+                premium: user.premium
             }
         });
 
@@ -179,13 +184,61 @@ app.post("/reset-password", async (req, res) => {
 
 });
 
-/* USERS  */
+/* UPGRADE PREMIUM */
+
+app.post("/upgrade-premium", async (req, res) => {
+
+    try {
+
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        user.premium = true;
+
+        await user.save();
+
+        res.json({
+            message: "User upgraded to premium"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+
+    }
+
+});
+
+/* USERS */
 
 app.get("/users", async (req, res) => {
 
-    const users = await User.find().select("-password");
+    try {
 
-    res.json(users);
+        const users = await User.find().select("-password").lean();
+
+        res.json(users);
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+
+    }
 
 });
 
