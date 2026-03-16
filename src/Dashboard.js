@@ -33,26 +33,18 @@ function Dashboard() {
 
   useEffect(() => {
 
-    const userData = localStorage.getItem("user");
-
-    if (!userData) {
-      navigate("/");
-      return;
-    }
-
     fetchUsers();
 
-    // Back button disable
-    window.history.pushState(null, null, window.location.href);
-
-    const handleBack = () => {
+    // Disable browser back button
+    const handleBackButton = () => {
       window.history.pushState(null, null, window.location.href);
     };
 
-    window.addEventListener("popstate", handleBack);
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener("popstate", handleBackButton);
 
     return () => {
-      window.removeEventListener("popstate", handleBack);
+      window.removeEventListener("popstate", handleBackButton);
     };
 
   }, []);

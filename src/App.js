@@ -3,6 +3,7 @@ import Register from "./Register";
 import Login from "./Login";
 import ResetPassword from "./ResetPassword";
 import Dashboard from "./Dashboard";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
@@ -11,7 +12,16 @@ function App() {
         <Route path="/" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </Router>
   );
