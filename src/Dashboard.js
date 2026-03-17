@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function Dashboard() {
 
   const navigate = useNavigate();
-
-  const userData = localStorage.getItem("user");
+  const userData = Cookies.get("user");
   const user = userData ? JSON.parse(userData) : null;
 
   const [users, setUsers] = useState([]);
@@ -14,7 +14,7 @@ function Dashboard() {
   const usersPerPage = 5;
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    Cookies.remove("user");
     navigate("/");
   };
 

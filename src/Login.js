@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -31,7 +32,7 @@ function Login() {
 
             console.log(res.data);
 
-            localStorage.setItem("user", JSON.stringify(res.data.user));
+            Cookies.set("user", JSON.stringify(res.data.user), { expires: 1 });
 
             setLoading(false);
             setShowPopup(true);
@@ -273,7 +274,7 @@ function Login() {
                             <button
                                 onClick={async () => {
 
-                                    const userData = JSON.parse(localStorage.getItem("user"));
+                                    const userData = JSON.parse(Cookies.get("user"));
 
                                     try {
 
@@ -285,7 +286,7 @@ function Login() {
                                         );
 
                                         userData.premium = true;
-                                        localStorage.setItem("user", JSON.stringify(userData));
+                                        Cookies.set("user", JSON.stringify(userData), { expires: 1 });
 
                                         let premiumUsers = JSON.parse(localStorage.getItem("premiumUsers")) || [];
 
