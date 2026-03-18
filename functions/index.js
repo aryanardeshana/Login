@@ -4,6 +4,8 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const stickersData = require("./data/stickers.json");
+const effectsData = require("./data/effects.json");
 
 const app = express();
 app.use(cors());
@@ -239,6 +241,70 @@ app.get("/users", async (req, res) => {
         });
 
     }
+
+});
+
+/* DELETE USER WITH EMAIL PASSWORD */
+
+app.post("/delete-user", async (req, res) => {
+
+    try {
+
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found"
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({
+                message: "Invalid password"
+            });
+        }
+
+        await User.deleteOne({ email });
+
+        res.json({
+            message: "User deleted successfully"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+
+    }
+
+});
+
+/* STICKERS API */
+
+app.get("/stickers", (req, res) => {
+
+    res.json({
+        success: true,
+        stickers: stickersData.stickers
+    });
+
+});
+
+/* EFFECTS API */
+
+app.get("/effects", (req, res) => {
+
+    res.json({
+        success: true,
+        effects: effectsData.effects
+    });
 
 });
 

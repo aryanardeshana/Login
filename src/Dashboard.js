@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 
 function Dashboard() {
 
   const navigate = useNavigate();
+
   const userData = Cookies.get("user");
   const user = userData ? JSON.parse(userData) : null;
 
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
   const usersPerPage = 5;
 
   const handleLogout = () => {
@@ -18,250 +22,290 @@ function Dashboard() {
     navigate("/");
   };
 
-  // FETCH USERS FROM API
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get(
-        "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/users"
-      );
-
-      setUsers(res.data);
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
 
-    fetchUsers();
-
-    const handleBackButton = () => {
-      window.history.pushState(null, null, window.location.href);
-    };
-
-    window.history.pushState(null, null, window.location.href);
-    window.addEventListener("popstate", handleBackButton);
-
-    return () => {
-      window.removeEventListener("popstate", handleBackButton);
-    };
+    axios
+      .get("https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/users")
+      .then(res => setUsers(res.data));
 
   }, []);
 
-  // PAGINATION LOGIC
+  const filteredUsers = users.filter((u) =>
+    u.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  const totalPages = Math.ceil(users.length / usersPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
-  // ADVANCED PAGINATION
-  const getPagination = () => {
+  const totalUsers = users.length;
+  const premiumUsers = users.filter(u => u.premium).length;
+  const freeUsers = users.filter(u => !u.premium).length;
 
-    const pages = [];
+  const chartData = [
+    { name: "Total", value: totalUsers },
+    { name: "Premium", value: premiumUsers },
+    { name: "Free", value: freeUsers }
+  ];
 
-    if (totalPages <= 7) {
-
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-
-    } else {
-
-      pages.push(1);
-
-      if (currentPage > 3) {
-        pages.push("...");
-      }
-
-      for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-        if (i > 1 && i < totalPages) {
-          pages.push(i);
-        }
-      }
-
-      if (currentPage < totalPages - 2) {
-        pages.push("...");
-      }
-
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
+  const COLORS = ["#3b82f6", "#f59e0b", "#22c55e"];
 
   return (
+
     <div className="min-h-screen bg-gray-100">
 
       {/* NAVBAR */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex justify-between items-center shadow">
 
-        <h1 className="text-xl font-bold tracking-wide">
-          User Dashboard
+      <div className="bg-blue-600 text-white flex justify-between items-center px-6 py-4 shadow">
+
+        <h1 className="text-xl font-bold">
+          Admin Dashboard
         </h1>
 
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition"
-        >
-          Logout
-        </button>
+        <div className="flex items-center gap-4">
 
-      </div>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+          >
+            Logout
+          </button>
 
-      {/* DASHBOARD CONTENT */}
-      <div className="max-w-9xl mx-auto mt-16 px-6">
-
-        {/* USER CARD */}
-        <div className="bg-white shadow-lg rounded-2xl p-8 flex items-center gap-6 mb-10">
-
-          <div className="w-16 h-16 bg-blue-500 text-white flex items-center justify-center rounded-full text-xl font-bold">
-            {user?.name?.charAt(0).toUpperCase() || "U"}
-          </div>
-
-          <div>
-
-            <h2 className="text-2xl font-semibold flex items-center gap-2">
-              Welcome {user?.name || "User"}
-
-              {user?.premium && (
-                <span className="text-yellow-500 flex items-center gap-1">
-                  <i className="fa-solid fa-crown"></i>
-                  Premium
-                </span>
-              )}
-
-            </h2>
-
-            <p className="text-gray-500">
-              {user?.email}
-            </p>
-
+          <div className="w-10 h-10 bg-orange-400 rounded-full flex items-center justify-center font-bold">
+            {user?.name?.charAt(0).toUpperCase()}
           </div>
 
         </div>
 
-        {/* USERS LIST */}
-        <div className="bg-white shadow-lg rounded-2xl p-8">
+      </div>
 
-          <h2 className="text-xl font-semibold mb-4">
-            Registered Users
+      <div className="p-6">
+
+        {/* USER CARD */}
+
+        <div className="bg-white shadow rounded-xl p-6 mb-6">
+
+          <h2 className="text-xl font-semibold">
+            Welcome {user?.name}
           </h2>
 
-          <table className="w-full border border-gray-200 text-center">
+          <p className="text-gray-500">
+            {user?.email}
+          </p>
 
-            <thead className="bg-gray-200">
+        </div>
+
+        {/* STATS */}
+
+        <div className="grid md:grid-cols-3 gap-6 mb-6">
+
+          <div className="bg-gradient-to-r from-blue-500 to-blue-400 text-white p-6 rounded-xl shadow">
+            <p>Total Users</p>
+            <h2 className="text-3xl font-bold">{totalUsers}</h2>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-500 to-orange-400 text-white p-6 rounded-xl shadow">
+            <p>Premium Users</p>
+            <h2 className="text-3xl font-bold">{premiumUsers}</h2>
+          </div>
+
+          <div className="bg-gradient-to-r from-green-500 to-green-400 text-white p-6 rounded-xl shadow">
+            <p>Free Users</p>
+            <h2 className="text-3xl font-bold">{freeUsers}</h2>
+          </div>
+
+        </div>
+
+        {/* SEARCH */}
+
+        <input
+          type="text"
+          placeholder="Search Users..."
+          className="w-full mb-4 p-3 border rounded-lg"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        {/* TABLE */}
+
+        <div className="bg-white shadow rounded-xl overflow-hidden">
+
+          <table className="w-full">
+
+            <thead className="bg-blue-600 text-white">
+
               <tr>
-                <th className="p-3 border">Name</th>
-                <th className="p-3 border">Email</th>
-                <th className="p-3 border">Status</th>
+                <th className="p-3">Name</th>
+                <th className="p-3">Email</th>
+                <th className="p-3">Status</th>
               </tr>
+
             </thead>
 
             <tbody>
 
-              {users.length > 0 ? (
+              {currentUsers.map((u, index) => (
+                <tr key={index} className="text-center border-b">
 
-                currentUsers.map((u, index) => (
+                  <td className="p-3">{u.name}</td>
+                  <td className="p-3">{u.email}</td>
 
-                  <tr key={index}>
+                  <td className="p-3">
 
-                    <td className="p-3 border">
-                      {u.name}
-                    </td>
+                    {u.premium ? (
+                      <span className="bg-yellow-400 px-3 py-1 rounded-full text-sm">
+                        Premium
+                      </span>
+                    ) : (
+                      <span className="bg-green-400 px-3 py-1 rounded-full text-sm">
+                        Free
+                      </span>
+                    )}
 
-                    <td className="p-3 border">
-                      {u.email}
-                    </td>
-
-                    <td className="p-3 border">
-
-                      {u.premium ? (
-
-                        <span className="text-yellow-500 font-semibold inline-flex items-center justify-center gap-1">
-                          <i className="fa-solid fa-crown"></i> Premium
-                        </span>
-
-                      ) : (
-
-                        <span className="text-gray-400">
-                          Free
-                        </span>
-
-                      )}
-
-                    </td>
-
-                  </tr>
-
-                ))
-
-              ) : (
-
-                <tr>
-                  <td colSpan="3" className="p-4 text-center">
-                    No users found
                   </td>
-                </tr>
 
-              )}
+                </tr>
+              ))}
 
             </tbody>
 
           </table>
 
-          {/* PAGINATION */}
-          <div className="flex justify-center mt-6 gap-2">
+        </div>
 
-            <button
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-300 rounded"
-            >
-              Prev
-            </button>
+        {/* ADVANCED PAGINATION */}
 
-            {getPagination().map((page, index) =>
-              page === "..." ? (
+        <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
 
-                <span key={index} className="px-3 py-2">
-                  ...
-                </span>
+          <button
+            onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+            className="px-4 py-2 border border-blue-500 text-blue-600 rounded hover:bg-blue-500 hover:text-white"
+          >
+            Prev
+          </button>
 
-              ) : (
+          <button
+            onClick={() => setCurrentPage(1)}
+            className={`px-4 py-2 rounded border ${currentPage === 1
+              ? "bg-blue-600 text-white border-blue-600"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            1
+          </button>
 
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded ${currentPage === page
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                    }`}
-                >
-                  {page}
-                </button>
+          {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
 
-              )
-            )}
+          {Array.from({ length: 5 }, (_, i) => currentPage - 2 + i)
+            .filter(p => p > 1 && p < totalPages)
+            .map(page => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-4 py-2 rounded border ${currentPage === page
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
+              >
+                {page}
+              </button>
+            ))}
 
-            <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-300 rounded"
-            >
-              Next
-            </button>
+          {currentPage < totalPages - 3 && (
+            <span className="px-2 text-gray-500">...</span>
+          )}
 
-          </div>
+          <button
+            onClick={() => setCurrentPage(totalPages)}
+            className={`px-4 py-2 rounded border ${currentPage === totalPages
+              ? "bg-blue-600 text-white border-blue-600"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            {totalPages}
+          </button>
+
+          <button
+            onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
+            className="px-4 py-2 border border-blue-500 text-blue-600 rounded hover:bg-blue-500 hover:text-white"
+          >
+            Next
+          </button>
+
+        </div>
+
+        {/* BAR CHART */}
+
+        <div className="bg-white shadow rounded-xl p-6 mt-6">
+
+          <h2 className="text-lg font-semibold mb-4">
+            User Statistics
+          </h2>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value" fill="#3b82f6" />
+            </BarChart>
+          </ResponsiveContainer>
+
+        </div>
+
+        {/* PIE CHART */}
+
+        <div className="bg-white shadow rounded-xl p-6 mt-6">
+
+          <h2 className="text-lg font-semibold mb-4">
+            User Distribution
+          </h2>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+
+              <Pie data={chartData} dataKey="value" outerRadius={100}>
+
+                {chartData.map((entry, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+
+              </Pie>
+
+              <Tooltip />
+
+            </PieChart>
+          </ResponsiveContainer>
+
+        </div>
+
+        {/* LINE CHART */}
+
+        <div className="bg-white shadow rounded-xl p-6 mt-6">
+
+          <h2 className="text-lg font-semibold mb-4">
+            User Growth
+          </h2>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={3} />
+            </LineChart>
+          </ResponsiveContainer>
 
         </div>
 
       </div>
 
     </div>
+
   );
+
 }
 
 export default Dashboard;
