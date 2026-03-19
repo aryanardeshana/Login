@@ -6,6 +6,9 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const stickersData = require("./data/stickers.json");
 const effectsData = require("./data/effects.json");
+const backgroundsData = require("./data/backgrounds.json");
+const graphicsData = require("./data/graphics.json");
+const categoriesData = require("./data/categories.json");
 
 const app = express();
 app.use(cors());
@@ -150,13 +153,14 @@ app.post("/login", async (req, res) => {
 
 /* RESET PASSWORD */
 
-app.post("/reset-password", async (req, res) => {
+app.post("/reset-password/:token", async (req, res) => {
 
     try {
 
-        const { email, newPassword } = req.body;
+        const { token } = req.params;
+        const { newPassword } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: token });
 
         if (!user) {
             return res.status(400).json({
@@ -172,6 +176,52 @@ app.post("/reset-password", async (req, res) => {
 
         res.json({
             message: "Password reset successful"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+
+    }
+
+});
+
+/* CHANGE PASSWORD */
+
+app.post("/change-password", async (req, res) => {
+
+    try {
+
+        const { email, oldPassword, newPassword } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found"
+            });
+        }
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({
+                message: "Old password incorrect"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 8);
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        res.json({
+            message: "Password changed successfully"
         });
 
     } catch (error) {
@@ -306,6 +356,35 @@ app.get("/effects", (req, res) => {
         effects: effectsData.effects
     });
 
+});
+
+/* BACKGROUNDS API */
+
+app.get("/backgrounds", (req, res) => {
+
+    res.json({
+        success: true,
+        backgrounds: backgroundsData.backgrounds
+    });
+
+});
+
+/* GRAPHICS API */
+
+app.get("/graphics", (req, res) => {
+    res.json({
+        success: true,
+        graphics: graphicsData.graphics
+    });
+});
+
+/* CATEGORIES API */
+
+app.get("/categories", (req, res) => {
+    res.json({
+        success: true,
+        categories: categoriesData.categories
+    });
 });
 
 /* EXPORT */

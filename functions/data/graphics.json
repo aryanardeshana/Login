@@ -1,0 +1,88 @@
+{
+  "graphics": {
+    "offers": [
+      {
+        "id": 1,
+        "image": "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"
+      },
+      {
+        "id": 2,
+        "image": "https://cdn-icons-png.flaticon.com/512/1170/1170678.png"
+      },
+      {
+        "id": 3,
+        "image": "https://cdn-icons-png.flaticon.com/512/1040/1040254.png"
+      },
+      {
+        "id": 4,
+        "image": "https://cdn-icons-png.flaticon.com/512/891/891419.png"
+      },
+      {
+        "id": 5,
+        "image": "https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+      },
+      {
+        "id": 6,
+        "image": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+      },
+      {
+        "id": 7,
+        "image": "https://cdn-icons-png.flaticon.com/512/3208/3208722.png"
+      },
+      {
+        "id": 8,
+        "image": "https://cdn-icons-png.flaticon.com/512/2917/2917995.png"
+      },
+      {
+        "id": 9,
+        "image": "https://cdn-icons-png.flaticon.com/512/2920/2920064.png"
+      },
+      {
+        "id": 10,
+        "image": "https://cdn-icons-png.flaticon.com/512/2921/2921222.png"
+      }
+    ],
+    "gods": [
+      {
+        "id": 11,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519073.png"
+      },
+      {
+        "id": 12,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519067.png"
+      },
+      {
+        "id": 13,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519076.png"
+      },
+      {
+        "id": 14,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519080.png"
+      },
+      {
+        "id": 15,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519071.png"
+      },
+      {
+        "id": 16,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519069.png"
+      },
+      {
+        "id": 17,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519078.png"
+      },
+      {
+        "id": 18,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519075.png"
+      },
+      {
+        "id": 19,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519068.png"
+      },
+      {
+        "id": 20,
+        "image": "https://cdn-icons-png.flaticon.com/512/2519/2519072.png"
+      }
+    ]
+  }
+}

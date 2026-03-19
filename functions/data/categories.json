@@ -1,0 +1,314 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "Our Service",
+            "sub_categories": [
+                {
+                    "id": 101,
+                    "name": "Logo Design",
+                    "image": "https://picsum.photos/200?random=1"
+                },
+                {
+                    "id": 102,
+                    "name": "Custom Frame",
+                    "image": "https://picsum.photos/200?random=2"
+                },
+                {
+                    "id": 103,
+                    "name": "Letterhead",
+                    "image": "https://picsum.photos/200?random=3"
+                },
+                {
+                    "id": 104,
+                    "name": "Visiting Card",
+                    "image": "https://picsum.photos/200?random=4"
+                },
+                {
+                    "id": 105,
+                    "name": "Banner Design",
+                    "image": "https://picsum.photos/200?random=5"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Holika Dahan",
+            "sub_categories": [
+                {
+                    "id": 201,
+                    "name": "Poster 1",
+                    "image": "https://picsum.photos/300/400?random=6"
+                },
+                {
+                    "id": 202,
+                    "name": "Poster 2",
+                    "image": "https://picsum.photos/300/400?random=7"
+                },
+                {
+                    "id": 203,
+                    "name": "Poster 3",
+                    "image": "https://picsum.photos/300/400?random=8"
+                },
+                {
+                    "id": 204,
+                    "name": "Video 1",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                },
+                {
+                    "id": 205,
+                    "name": "Video 2",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "IT & Software",
+            "sub_categories": [
+                {
+                    "id": 301,
+                    "name": "Developer Poster",
+                    "image": "https://picsum.photos/300/400?random=9"
+                },
+                {
+                    "id": 302,
+                    "name": "Web Design",
+                    "image": "https://picsum.photos/300/400?random=10"
+                },
+                {
+                    "id": 303,
+                    "name": "UI Design",
+                    "image": "https://picsum.photos/300/400?random=11"
+                },
+                {
+                    "id": 304,
+                    "name": "Promo Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+                },
+                {
+                    "id": 305,
+                    "name": "App Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "General",
+            "sub_categories": [
+                {
+                    "id": 401,
+                    "name": "Motivation",
+                    "image": "https://picsum.photos/300/400?random=12"
+                },
+                {
+                    "id": 402,
+                    "name": "Quotes",
+                    "image": "https://picsum.photos/300/400?random=13"
+                },
+                {
+                    "id": 403,
+                    "name": "Success",
+                    "image": "https://picsum.photos/300/400?random=14"
+                },
+                {
+                    "id": 404,
+                    "name": "Motivation Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+                },
+                {
+                    "id": 405,
+                    "name": "Success Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "Festival",
+            "sub_categories": [
+                {
+                    "id": 501,
+                    "name": "Diwali Poster",
+                    "image": "https://picsum.photos/300/400?random=15"
+                },
+                {
+                    "id": 502,
+                    "name": "Holi Poster",
+                    "image": "https://picsum.photos/300/400?random=16"
+                },
+                {
+                    "id": 503,
+                    "name": "Navratri Poster",
+                    "image": "https://picsum.photos/300/400?random=17"
+                },
+                {
+                    "id": 504,
+                    "name": "Festival Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
+                },
+                {
+                    "id": 505,
+                    "name": "Celebration Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": "Business",
+            "sub_categories": [
+                {
+                    "id": 601,
+                    "name": "Startup Poster",
+                    "image": "https://picsum.photos/300/400?random=18"
+                },
+                {
+                    "id": 602,
+                    "name": "Marketing Poster",
+                    "image": "https://picsum.photos/300/400?random=19"
+                },
+                {
+                    "id": 603,
+                    "name": "Branding",
+                    "image": "https://picsum.photos/300/400?random=20"
+                },
+                {
+                    "id": 604,
+                    "name": "Business Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                },
+                {
+                    "id": 605,
+                    "name": "Promo Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Education",
+            "sub_categories": [
+                {
+                    "id": 701,
+                    "name": "Study Poster",
+                    "image": "https://picsum.photos/300/400?random=21"
+                },
+                {
+                    "id": 702,
+                    "name": "Exam Tips",
+                    "image": "https://picsum.photos/300/400?random=22"
+                },
+                {
+                    "id": 703,
+                    "name": "Learning",
+                    "image": "https://picsum.photos/300/400?random=23"
+                },
+                {
+                    "id": 704,
+                    "name": "Education Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+                },
+                {
+                    "id": 705,
+                    "name": "Tutorial Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "name": "Social Media",
+            "sub_categories": [
+                {
+                    "id": 801,
+                    "name": "Instagram Post",
+                    "image": "https://picsum.photos/300/400?random=24"
+                },
+                {
+                    "id": 802,
+                    "name": "Facebook Post",
+                    "image": "https://picsum.photos/300/400?random=25"
+                },
+                {
+                    "id": 803,
+                    "name": "YouTube Thumbnail",
+                    "image": "https://picsum.photos/300/400?random=26"
+                },
+                {
+                    "id": 804,
+                    "name": "Reel Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+                },
+                {
+                    "id": 805,
+                    "name": "Short Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "name": "Marketing",
+            "sub_categories": [
+                {
+                    "id": 901,
+                    "name": "Ad Banner",
+                    "image": "https://picsum.photos/300/400?random=27"
+                },
+                {
+                    "id": 902,
+                    "name": "Promotion Poster",
+                    "image": "https://picsum.photos/300/400?random=28"
+                },
+                {
+                    "id": 903,
+                    "name": "Sales Poster",
+                    "image": "https://picsum.photos/300/400?random=29"
+                },
+                {
+                    "id": 904,
+                    "name": "Marketing Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
+                },
+                {
+                    "id": 905,
+                    "name": "Ad Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "name": "Events",
+            "sub_categories": [
+                {
+                    "id": 1001,
+                    "name": "Wedding Poster",
+                    "image": "https://picsum.photos/300/400?random=30"
+                },
+                {
+                    "id": 1002,
+                    "name": "Birthday Poster",
+                    "image": "https://picsum.photos/300/400?random=31"
+                },
+                {
+                    "id": 1003,
+                    "name": "Party Poster",
+                    "image": "https://picsum.photos/300/400?random=32"
+                },
+                {
+                    "id": 1004,
+                    "name": "Event Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+                },
+                {
+                    "id": 1005,
+                    "name": "Celebration Video",
+                    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+                }
+            ]
+        }
+    ]
+}

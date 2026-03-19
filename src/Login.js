@@ -45,30 +45,15 @@ function Login() {
         }
     };
 
-    const handleResetPassword = async (e) => {
+    const handleResetPassword = (e) => {
 
         e.preventDefault();
-        setResetLoading(true);
-        setResetMessage("");
 
-        try {
+        navigate(`/reset-password/${resetEmail}`);
 
-            const res = await axios.post(
-                "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/reset-password",
-                { email: resetEmail }
-            );
+        setShowForgot(false);
+        setResetEmail("");
 
-            setResetMessage(res.data.message);
-
-        } catch (err) {
-
-            setResetMessage(
-                err.response?.data?.message || "Something went wrong"
-            );
-
-        }
-
-        setResetLoading(false);
     };
 
     return (

@@ -64,8 +64,15 @@ function Dashboard() {
         <h1 className="text-xl font-bold">
           Admin Dashboard
         </h1>
-
+        
         <div className="flex items-center gap-4">
+
+          <button
+            onClick={() => navigate("/change-password")}
+            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+          >
+            Change Password
+          </button>
 
           <button
             onClick={handleLogout}
