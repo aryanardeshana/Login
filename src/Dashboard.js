@@ -11,11 +11,30 @@ function Dashboard() {
   const userData = Cookies.get("user");
   const user = userData ? JSON.parse(userData) : null;
 
+  //state
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [apiList, setApiList] = useState([]);
   const usersPerPage = 5;
+
+  //  API LIST
+  // const apiList = [
+  //   { name: "Register API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/register" },
+  //   { name: "Login API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/login" },
+  //   { name: "Get Users API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/users" },
+  //   { name: "Base API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api" },
+  //   { name: "Upgrade Premium API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/upgrade-premium" },
+  //   { name: "Delete User API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/delete-user" },
+  //   { name: "Stickers API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/stickers" },
+  //   { name: "Effects API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/effects" },
+  //   { name: "Change Password API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/change-password" },
+  //   { name: "Backgrounds API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/backgrounds" },
+  //   { name: "Graphics API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/graphics" },
+  //   { name: "Categories API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/categories" }
+  // ];
+
+  const totalApis = apiList.length;
 
   const handleLogout = () => {
     Cookies.remove("user");
@@ -24,9 +43,15 @@ function Dashboard() {
 
   useEffect(() => {
 
+    // USERS
     axios
       .get("https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/users")
       .then(res => setUsers(res.data));
+
+    // APIs LIST
+    axios
+      .get("https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/all-apis")
+      .then(res => setApiList(res.data.data));
 
   }, []);
 
@@ -64,7 +89,7 @@ function Dashboard() {
         <h1 className="text-xl font-bold">
           Admin Dashboard
         </h1>
-        
+
         <div className="flex items-center gap-4">
 
           <button
@@ -240,6 +265,61 @@ function Dashboard() {
           >
             Next
           </button>
+
+        </div>
+
+        {/* API LIST */}
+
+        <div className="bg-white shadow rounded-xl p-6 mt-6">
+
+          <h2 className="text-lg font-semibold mb-4">
+            Developed APIs
+          </h2>
+
+          <table className="w-full text-left">
+
+            <thead className="bg-purple-600 text-white">
+              <tr>
+                <th className="p-3">API Name</th>
+                <th className="p-3">API URL</th>
+                <th className="p-3 text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              {apiList.map((api, index) => (
+                <tr key={index} className="border-b">
+
+                  <td className="p-3 font-medium">
+                    {api.name}
+                  </td>
+
+                  <td className="p-3 text-blue-600">
+                    <a
+                      href={api.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                    >
+                      {api.url}
+                    </a>
+                  </td>
+
+                  <td className="p-3 text-center">
+                    <button
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                    >
+                      Add
+                    </button>
+                  </td>
+
+                </tr>
+              ))}
+
+            </tbody>
+
+          </table>
 
         </div>
 

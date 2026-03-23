@@ -9,6 +9,7 @@ const effectsData = require("./data/effects.json");
 const backgroundsData = require("./data/backgrounds.json");
 const graphicsData = require("./data/graphics.json");
 const categoriesData = require("./data/categories.json");
+const calendarData = require("./data/calendar.json");
 
 const app = express();
 app.use(cors());
@@ -385,6 +386,46 @@ app.get("/categories", (req, res) => {
         success: true,
         categories: categoriesData.categories
     });
+});
+
+/* CALENDAR API */
+
+app.get("/calendar/holidays", (req, res) => {
+
+    res.json({
+        success: true,
+        count: calendarData.holidays.length,
+        holidays: calendarData.holidays
+    });
+
+});
+
+/* ALL APIs LIST */
+
+app.get("/all-apis", (req, res) => {
+
+    const apis = [
+        { name: "Register API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/register" },
+        { name: "Login API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/login" },
+        { name: "Users API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/users" },
+        { name: "Base API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api" },
+        { name: "Upgrade Premium API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/upgrade-premium" },
+        { name: "Delete User API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/delete-user" },
+        { name: "Stickers API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/stickers" },
+        { name: "Effects API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/effects" },
+        { name: "Change Password API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/change-password" },
+        { name: "Backgrounds API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/backgrounds" },
+        { name: "Graphics API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/graphics" },
+        { name: "Categories API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/categories" },
+        { name: "Calendar API", url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/calendar/holidays" }
+    ];
+
+    res.json({
+        success: true,
+        count: apis.length,
+        data: apis
+    });
+
 });
 
 /* EXPORT */

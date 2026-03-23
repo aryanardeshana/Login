@@ -1,0 +1,24 @@
+{
+    "holidays": [
+        {
+            "name": "Ram Navami",
+            "date": "2026-03-09",
+            "image": "https://picsum.photos/400/300?random=1"
+        },
+        {
+            "name": "Holi",
+            "date": "2026-03-15",
+            "image": "https://picsum.photos/400/300?random=2"
+        },
+        {
+            "name": "Mahavir Jayanti",
+            "date": "2026-03-17",
+            "image": "https://picsum.photos/400/300?random=3"
+        },
+        {
+            "name": "Holi2",
+            "date": "2026-03-15",
+            "image": "https://picsum.photos/400/300?random=4"
+        }
+    ]
+}
