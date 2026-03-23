@@ -100,6 +100,13 @@ function Dashboard() {
           </button>
 
           <button
+            onClick={() => navigate("/update-profile")}
+            className="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded-lg"
+          >
+            Update Profile
+          </button>
+
+          <button
             onClick={handleLogout}
             className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
           >

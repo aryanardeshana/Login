@@ -45,15 +45,27 @@ function Login() {
         }
     };
 
-    const handleResetPassword = (e) => {
+    const handleResetPassword = async (e) => {
 
         e.preventDefault();
+        setResetLoading(true);
 
-        navigate(`/reset-password/${resetEmail}`);
+        try {
+            const res = await axios.post(
+                "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/forgot-password",
+                { email: resetEmail }
+            );
 
-        setShowForgot(false);
-        setResetEmail("");
+            setResetMessage(res.data.message);
 
+            // OTP page par ja
+            navigate("/otp-reset", { state: { email: resetEmail } });
+
+        } catch (err) {
+            setResetMessage(err.response?.data?.message || "Error");
+        }
+
+        setResetLoading(false);
     };
 
     return (

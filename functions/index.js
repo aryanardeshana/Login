@@ -57,7 +57,10 @@ const UserSchema = new mongoose.Schema({
     premium: {
         type: Boolean,
         default: false
-    }
+    },
+
+    otp: String,
+    otpExpire: Date
 });
 
 const User = mongoose.model("User", UserSchema);
@@ -152,43 +155,71 @@ app.post("/login", async (req, res) => {
     }
 });
 
-/* RESET PASSWORD */
+// nodemailer
+const nodemailer = require("nodemailer");
 
-app.post("/reset-password/:token", async (req, res) => {
+app.post("/forgot-password", async (req, res) => {
 
-    try {
+    const { email } = req.body;
 
-        const { token } = req.params;
-        const { newPassword } = req.body;
+    const user = await User.findOne({ email });
 
-        const user = await User.findOne({ email: token });
-
-        if (!user) {
-            return res.status(400).json({
-                message: "User not found"
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(newPassword, 8);
-
-        user.password = hashedPassword;
-
-        await user.save();
-
-        res.json({
-            message: "Password reset successful"
-        });
-
-    } catch (error) {
-
-        console.log(error);
-
-        res.status(500).json({
-            message: "Server error"
-        });
-
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
     }
 
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpire = Date.now() + 300000;
+
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "www.aryanpatel3772@gmail.com",
+            pass: "kpof cxoz lptk vnti"
+        }
+    });
+
+    await transporter.sendMail({
+        to: email,
+        subject: "OTP",
+        html: `<h2>Your OTP: ${otp}</h2>`
+    });
+
+    res.json({ message: "OTP sent successfully" });
+});
+
+/* RESET PASSWORD */
+
+app.post("/verify-otp-reset", async (req, res) => {
+
+    const { email, otp, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.status(400).json({ message: "User not found" });
+    }
+
+    // OTP check
+    if (user.otp !== otp || user.otpExpire < Date.now()) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 8);
+
+    user.password = hashedPassword;
+
+    // OTP clear
+    user.otp = undefined;
+    user.otpExpire = undefined;
+
+    await user.save();
+
+    res.json({ message: "Password reset successful" });
 });
 
 /* CHANGE PASSWORD */
@@ -223,6 +254,46 @@ app.post("/change-password", async (req, res) => {
 
         res.json({
             message: "Password changed successfully"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+
+    }
+
+});
+
+/* UPDATE PROFILE (CHANGE NAME) */
+
+app.post("/update-profile", async (req, res) => {
+
+    try {
+
+        const { email, name } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        user.name = name;
+
+        await user.save();
+
+        res.json({
+            message: "Profile updated successfully",
+            user: {
+                name: user.name,
+                email: user.email
+            }
         });
 
     } catch (error) {
