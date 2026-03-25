@@ -1,29 +1,52 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "./Register";
-import Login from "./Login";
-import ResetPassword from "./ResetPassword";
-import Dashboard from "./Dashboard";
-import ProtectedRoute from "./ProtectedRoute";
-import ChangePassword from "./ChangePassword";
-import OtpReset from "./OtpReset";
-import UpdateProfile from "./UpdateProfile";
+
+// Pages
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
+import ChangePassword from "./pages/ChangePassword";
+import OtpReset from "./pages/OtpReset";
+import UpdateProfile from "./pages/UpdateProfile";
+import Dashboard from "./pages/Dashboard";
+
+// Components
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
+
+        {/* Public Routes */}
         <Route path="/" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/otp-reset" element={<OtpReset />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/update-profile" element={<UpdateProfile />} />
 
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/update-profile"
+          element={
+            <ProtectedRoute>
+              <UpdateProfile />
             </ProtectedRoute>
           }
         />
@@ -34,3 +57,4 @@ function App() {
 }
 
 export default App;
+

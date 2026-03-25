@@ -10,10 +10,46 @@ const backgroundsData = require("./data/backgrounds.json");
 const graphicsData = require("./data/graphics.json");
 const categoriesData = require("./data/categories.json");
 const calendarData = require("./data/calendar.json");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
+const cookieParser = require("cookie-parser");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser());
+
+// Swagger UI
+// Swagger JSON
+app.get("/docs-json", (req, res) => {
+    res.json(swaggerSpec);
+});
+
+// Swagger UI (HTML)
+app.get("/docs", (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Swagger UI</title>
+            <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+        </head>
+        <body>
+            <div id="swagger-ui"></div>
+            <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+            <script>
+               SwaggerUIBundle({
+    url: 'https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/docs-json',
+    dom_id: '#swagger-ui',
+});
+            </script>
+        </body>
+        </html>
+    `);
+});
 
 const SECRET_KEY = "mysecretkey";
 
@@ -34,6 +70,32 @@ const connectDB = async () => {
 
 connectDB();
 
+/* AUTH MIDDLEWARE */
+
+const authMiddleware = (req, res, next) => {
+
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({
+            message: "No token, access denied"
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, SECRET_KEY);
+
+        req.user = decoded;
+
+        next();
+
+    } catch (error) {
+        return res.status(401).json({
+            message: "Invalid token"
+        });
+    }
+};
+
 /* TEST API */
 
 app.get("/", (req, res) => {
@@ -51,9 +113,22 @@ app.get("/response", (req, res) => {
 /* USER SCHEMA  */
 
 const UserSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
+    name: {
+        type: String,
+        required: true   // name must
+    },
+
+    email: {
+        type: String,
+        required: true,
+        unique: true     //  duplicate email block
+    },
+
+    password: {
+        type: String,
+        required: true   //  password must
+    },
+
     premium: {
         type: Boolean,
         default: false
@@ -66,7 +141,32 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model("User", UserSchema);
 
 /* REGISTER  */
-
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register new user
+ *     description: Create a new user account
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Aryan
+ *               email:
+ *                 type: string
+ *                 example: aryan@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: 123456
+ *     responses:
+ *       200:
+ *         description: User registered successfully
+ */
 app.post("/register", async (req, res) => {
     try {
 
@@ -106,7 +206,29 @@ app.post("/register", async (req, res) => {
 });
 
 /*  LOGIN  */
-
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: User login
+ *     description: Login with email and password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: aryan@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: 123456
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
 app.post("/login", async (req, res) => {
     try {
 
@@ -193,10 +315,35 @@ app.post("/forgot-password", async (req, res) => {
 });
 
 /* RESET PASSWORD */
-
+/**
+ * @swagger
+ * /forgot-password:
+ *   post:
+ *     summary: Send OTP to email
+ *     description: Generate and send OTP for password reset
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: aryan@gmail.com
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
+ */
 app.post("/verify-otp-reset", async (req, res) => {
 
     const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+        return res.status(400).json({
+            message: "All fields required"
+        });
+    }
 
     const user = await User.findOne({ email });
 
@@ -204,7 +351,6 @@ app.post("/verify-otp-reset", async (req, res) => {
         return res.status(400).json({ message: "User not found" });
     }
 
-    // OTP check
     if (user.otp !== otp || user.otpExpire < Date.now()) {
         return res.status(400).json({ message: "Invalid or expired OTP" });
     }
@@ -212,8 +358,6 @@ app.post("/verify-otp-reset", async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 8);
 
     user.password = hashedPassword;
-
-    // OTP clear
     user.otp = undefined;
     user.otpExpire = undefined;
 
@@ -224,13 +368,13 @@ app.post("/verify-otp-reset", async (req, res) => {
 
 /* CHANGE PASSWORD */
 
-app.post("/change-password", async (req, res) => {
+app.post("/change-password", authMiddleware, async (req, res) => {
 
     try {
 
-        const { email, oldPassword, newPassword } = req.body;
+        const { oldPassword, newPassword } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findById(req.user.id);
 
         if (!user) {
             return res.status(400).json({
@@ -270,13 +414,13 @@ app.post("/change-password", async (req, res) => {
 
 /* UPDATE PROFILE (CHANGE NAME) */
 
-app.post("/update-profile", async (req, res) => {
+app.post("/update-profile", authMiddleware, async (req, res) => {
 
     try {
 
-        const { email, name } = req.body;
+        const { name } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findById(req.user.id);
 
         if (!user) {
             return res.status(404).json({
@@ -289,11 +433,7 @@ app.post("/update-profile", async (req, res) => {
         await user.save();
 
         res.json({
-            message: "Profile updated successfully",
-            user: {
-                name: user.name,
-                email: user.email
-            }
+            message: "Profile updated successfully"
         });
 
     } catch (error) {
@@ -345,7 +485,16 @@ app.post("/upgrade-premium", async (req, res) => {
 });
 
 /* USERS */
-
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     description: Fetch all users from database
+ *     responses:
+ *       200:
+ *         description: Users fetched successfully
+ */
 app.get("/users", async (req, res) => {
 
     try {
@@ -368,20 +517,21 @@ app.get("/users", async (req, res) => {
 
 /* DELETE USER WITH EMAIL PASSWORD */
 
-app.post("/delete-user", async (req, res) => {
+app.post("/delete-user", authMiddleware, async (req, res) => {
 
     try {
 
-        const { email, password } = req.body;
+        const { password } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findById(req.user.id);
 
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 message: "User not found"
             });
         }
 
+        //  Password verify (extra security)
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
@@ -390,22 +540,15 @@ app.post("/delete-user", async (req, res) => {
             });
         }
 
-        await User.deleteOne({ email });
+        await User.deleteOne({ _id: req.user.id });
 
         res.json({
             message: "User deleted successfully"
         });
 
     } catch (error) {
-
-        console.log(error);
-
-        res.status(500).json({
-            message: "Server error"
-        });
-
+        res.status(500).json({ message: "Server error" });
     }
-
 });
 
 /* STICKERS API */

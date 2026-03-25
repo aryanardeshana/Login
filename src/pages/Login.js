@@ -31,7 +31,7 @@ function Login() {
             });
 
             console.log(res.data);
-
+            Cookies.set("token", res.data.token, { expires: 1 });
             Cookies.set("user", JSON.stringify(res.data.user), { expires: 1 });
 
             setLoading(false);

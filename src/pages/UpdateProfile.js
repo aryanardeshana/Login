@@ -16,11 +16,17 @@ function UpdateProfile() {
 
         try {
 
+            const token = Cookies.get("token");
+
             const res = await axios.post(
                 "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api/update-profile",
                 {
-                    email: user.email,
                     name: name
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                    }
                 }
             );
 
