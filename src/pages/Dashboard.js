@@ -7,7 +7,7 @@ import Users from "../components/Users";
 import ApiList from "../components/ApiList";
 import Charts from "../components/Charts";
 import DashboardHome from "../components/DashboardHome";
-import Layout from "../components/Layout"; 
+import Layout from "../components/Layout";
 
 function Dashboard() {
 
@@ -58,7 +58,11 @@ function Dashboard() {
   };
 
   return (
-    <Layout setActive={setActive}> 
+    <Layout
+      setActive={setActive}
+      navigate={navigate}
+      handleLogout={handleLogout}
+    >
 
       <Navbar
         user={user}

@@ -13,8 +13,21 @@ const options = {
                 url: "https://us-central1-pdf-merge-a77ae.cloudfunctions.net/api",
             },
         ],
+
+        //  ADD THIS (IMPORTANT)
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT",
+                },
+            },
+        },
     },
-    apis: ["./index.js"], 
+
+    //  dynamic scan
+    apis: ["./index.js"],
 };
 
 const swaggerSpec = swaggerJsDoc(options);

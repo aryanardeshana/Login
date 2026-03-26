@@ -300,8 +300,8 @@ app.post("/forgot-password", async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "www.aryanpatel3772@gmail.com",
-            pass: "kpof cxoz lptk vnti"
+            user: functions.config().gmail.email,
+            pass: functions.config().gmail.pass
         }
     });
 
@@ -317,10 +317,11 @@ app.post("/forgot-password", async (req, res) => {
 /* RESET PASSWORD */
 /**
  * @swagger
- * /forgot-password:
+ * /verify-otp-reset:
  *   post:
- *     summary: Send OTP to email
- *     description: Generate and send OTP for password reset
+ *     summary: Verify OTP and reset password
+ *     description: Verify OTP and set new password
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
@@ -331,9 +332,15 @@ app.post("/forgot-password", async (req, res) => {
  *               email:
  *                 type: string
  *                 example: aryan@gmail.com
+ *               otp:
+ *                 type: string
+ *                 example: 123456
+ *               newPassword:
+ *                 type: string
+ *                 example: 123456
  *     responses:
  *       200:
- *         description: OTP sent successfully
+ *         description: Password reset successful
  */
 app.post("/verify-otp-reset", async (req, res) => {
 
@@ -367,7 +374,35 @@ app.post("/verify-otp-reset", async (req, res) => {
 });
 
 /* CHANGE PASSWORD */
-
+/**
+ * @swagger
+ * /change-password:
+ *   post:
+ *     summary: Change user password
+ *     description: User can change password using old password
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 example: 123456
+ *               newPassword:
+ *                 type: string
+ *                 example: 654321
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Old password incorrect / User not found
+ */
 app.post("/change-password", authMiddleware, async (req, res) => {
 
     try {
@@ -413,7 +448,32 @@ app.post("/change-password", authMiddleware, async (req, res) => {
 });
 
 /* UPDATE PROFILE (CHANGE NAME) */
-
+/**
+ * @swagger
+ * /update-profile:
+ *   post:
+ *     summary: Update user profile
+ *     description: Update user's name
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Aryan Patel
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       404:
+ *         description: User not found
+ */
 app.post("/update-profile", authMiddleware, async (req, res) => {
 
     try {
@@ -449,7 +509,30 @@ app.post("/update-profile", authMiddleware, async (req, res) => {
 });
 
 /* UPGRADE PREMIUM */
-
+/**
+ * @swagger
+ * /upgrade-premium:
+ *   post:
+ *     summary: Upgrade user to premium
+ *     description: Set user premium status to true
+ *     tags:
+ *       - User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: aryan@gmail.com
+ *     responses:
+ *       200:
+ *         description: User upgraded to premium
+ *       404:
+ *         description: User not found
+ */
 app.post("/upgrade-premium", async (req, res) => {
 
     try {
@@ -516,7 +599,33 @@ app.get("/users", async (req, res) => {
 });
 
 /* DELETE USER WITH EMAIL PASSWORD */
-
+/**
+ * @swagger
+ * /delete-user:
+ *   post:
+ *     summary: Delete user account
+ *     description: Delete user using password verification
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 example: 123456
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       400:
+ *         description: Invalid password
+ *       404:
+ *         description: User not found
+ */
 app.post("/delete-user", authMiddleware, async (req, res) => {
 
     try {
@@ -552,7 +661,16 @@ app.post("/delete-user", authMiddleware, async (req, res) => {
 });
 
 /* STICKERS API */
-
+/**
+ * @swagger
+ * /stickers:
+ *   get:
+ *     summary: Get all stickers
+ *     tags: [Assets]
+ *     responses:
+ *       200:
+ *         description: List of stickers
+ */
 app.get("/stickers", (req, res) => {
 
     res.json({
@@ -563,7 +681,16 @@ app.get("/stickers", (req, res) => {
 });
 
 /* EFFECTS API */
-
+/**
+ * @swagger
+ * /effects:
+ *   get:
+ *     summary: Get all effects
+ *     tags: [Assets]
+ *     responses:
+ *       200:
+ *         description: List of effects
+ */
 app.get("/effects", (req, res) => {
 
     res.json({
@@ -574,7 +701,16 @@ app.get("/effects", (req, res) => {
 });
 
 /* BACKGROUNDS API */
-
+/**
+ * @swagger
+ * /backgrounds:
+ *   get:
+ *     summary: Get all backgrounds
+ *     tags: [Assets]
+ *     responses:
+ *       200:
+ *         description: List of backgrounds
+ */
 app.get("/backgrounds", (req, res) => {
 
     res.json({
@@ -585,7 +721,16 @@ app.get("/backgrounds", (req, res) => {
 });
 
 /* GRAPHICS API */
-
+/**
+ * @swagger
+ * /graphics:
+ *   get:
+ *     summary: Get all graphics
+ *     tags: [Assets]
+ *     responses:
+ *       200:
+ *         description: List of graphics
+ */
 app.get("/graphics", (req, res) => {
     res.json({
         success: true,
@@ -594,7 +739,16 @@ app.get("/graphics", (req, res) => {
 });
 
 /* CATEGORIES API */
-
+/**
+ * @swagger
+ * /categories:
+ *   get:
+ *     summary: Get all categories
+ *     tags: [Assets]
+ *     responses:
+ *       200:
+ *         description: List of categories
+ */
 app.get("/categories", (req, res) => {
     res.json({
         success: true,
@@ -603,7 +757,16 @@ app.get("/categories", (req, res) => {
 });
 
 /* CALENDAR API */
-
+/**
+ * @swagger
+ * /calendar/holidays:
+ *   get:
+ *     summary: Get all holidays
+ *     tags: [Calendar]
+ *     responses:
+ *       200:
+ *         description: List of holidays
+ */
 app.get("/calendar/holidays", (req, res) => {
 
     res.json({
@@ -615,7 +778,16 @@ app.get("/calendar/holidays", (req, res) => {
 });
 
 /* ALL APIs LIST */
-
+/**
+ * @swagger
+ * /all-apis:
+ *   get:
+ *     summary: Get all API endpoints list
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: List of all APIs
+ */
 app.get("/all-apis", (req, res) => {
 
     const apis = [

@@ -589,7 +589,7 @@ const SidebarMenuSubButton = React.forwardRef(
 )
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
 
-export function AppSidebar({ setActive }) {
+export function AppSidebar({ setActive, navigate, handleLogout }) {
   return (
     <Sidebar>
       <SidebarContent>
@@ -632,7 +632,31 @@ export function AppSidebar({ setActive }) {
           </SidebarGroupContent>
 
         </SidebarGroup>
+        <SidebarFooter className="mt-auto">
 
+          <SidebarMenu>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={() => navigate("/change-password")}>
+                <span>Change Password</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={() => navigate("/update-profile")}>
+                <span>Update Profile</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={handleLogout}>
+                <span className="text-red-500">Logout</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+          </SidebarMenu>
+
+        </SidebarFooter>
       </SidebarContent>
     </Sidebar>
   );
